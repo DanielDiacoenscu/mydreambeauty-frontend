@@ -1,7 +1,6 @@
 'use client';
 
 import { useEffect, useState } from 'react';
-import { addToCart } from '@/utils/cart';  // Not used here, but for consistency
 
 interface CartItem {
   id: number;
