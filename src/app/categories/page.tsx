@@ -3,6 +3,7 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
+import Image from 'next/image';
 
 interface Category {
   id: number;
@@ -43,12 +44,13 @@ export default function Categories() {
             {category.attributes.products.data.map(product => (
               <Link key={product.id} href={`/product/${product.id}`} className="block">
                 <div className="border border-gray-200 p-4 hover:shadow-lg transition-shadow">
-                  <img 
-                    src={`https://api.mydreambeauty.net${product.attributes.image.data.attributes.url}`} 
-                    alt={product.attributes.name} 
-                    className="w-full h-64 object-cover mb-4" 
-                  />
-                  <h3 className="text-xl font-semibold">{product.attributes.name}</h3>
+		<Image 
+		  src={`https://api.mydreambeauty.net${product.attributes.image.data.attributes.url}`} 
+		  alt={product.attributes.name} 
+		  width={500}  // Adjust based on your images
+		  height={256} 
+		  className="w-full h-64 object-cover mb-4" 
+		/>                  <h3 className="text-xl font-semibold">{product.attributes.name}</h3>
                   <p className="text-lg text-gray-700">${product.attributes.price.toFixed(2)}</p>
                 </div>
               </Link>

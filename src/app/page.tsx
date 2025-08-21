@@ -1,8 +1,16 @@
+import Image from 'next/image';  // Added for optimized images
+
 export default function Home() {
   return (
     <main>
       <section className="relative h-96">
-        <img src="/hero.jpg" alt="Beauty Hero" className="w-full h-full object-cover" /> {/* Upload your hero image to public/ */}
+        <Image 
+          src="/hero.jpg" 
+          alt="Beauty Hero" 
+          fill 
+          className="object-cover" 
+          priority  // For faster loading on homepage
+        /> {/* Replaced img with Image */}
         <div className="absolute inset-0 flex items-center justify-center text-center text-white bg-black bg-opacity-30">
           <div>
             <h1 className="text-4xl md:text-6xl font-bold">Timeless Beauty Awaits</h1>

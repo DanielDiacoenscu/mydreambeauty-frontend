@@ -1,6 +1,7 @@
 import { Geist, Geist_Mono } from "next/font/google";
 import "./globals.css";
-import { Metadata } from "next";  // Import if not already (for type)
+import { Metadata } from "next";
+import Link from 'next/link';  // Added for internal links
 
 const geistSans = Geist({
   variable: "--font-geist-sans",
@@ -29,10 +30,10 @@ export default function RootLayout({
       >
         <header className="bg-black text-white p-4 fixed w-full top-0 z-10">
           <nav className="flex justify-between items-center max-w-7xl mx-auto">
-            <a href="/" className="text-xl font-bold">My Dream Beauty</a>
+            <Link href="/" className="text-xl font-bold">My Dream Beauty</Link>
             <ul className="flex space-x-6 items-center">
-              <li><a href="/shop">Shop</a></li>
-              <li><a href="/categories">Categories</a></li>
+              <li><Link href="/shop">Shop</Link></li>
+              <li><Link href="/categories">Categories</Link></li>
               <li>
                 <form action="/search" method="get" className="flex">
                   <input 
@@ -44,8 +45,8 @@ export default function RootLayout({
                   <button type="submit" className="bg-gray-600 text-white px-3 py-2 rounded-r">Go</button>
                 </form>
               </li>
-              <li><a href="/cart">Cart</a></li>
-              <li><a href="/account">Account</a></li>
+              <li><Link href="/cart">Cart</Link></li>
+              <li><Link href="/account">Account</Link></li>
             </ul>
           </nav>
         </header>
