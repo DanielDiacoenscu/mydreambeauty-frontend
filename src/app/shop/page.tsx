@@ -10,7 +10,7 @@ interface Product {
   attributes: {
     name: string;
     price: number;
-    image: { data: { attributes: { url: string } } };
+    Images: { data: { attributes: { url: string } } };
   };
 }
 
