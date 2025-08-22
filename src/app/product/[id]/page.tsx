@@ -1,7 +1,8 @@
 'use client';
+'use client';
 
 import { useEffect, useState } from 'react';
-import { useParams } from 'next/navigation';  // Add if not there for params.id
+import { useParams } from 'next/navigation';
 import axios from 'axios';
 import Image from 'next/image';
 
@@ -9,24 +10,28 @@ interface Product {
   name: string;
   price: number;
   description: string;
-  image: { data: { attributes: { url: string } } };
+  Images: { data: { attributes: { url: string } } };  // Matched to your prod field name (capital I, plural)
 }
 
 export default function ProductPage() {
-  const params = useParams();  // Gets dynamic [id] from URL
+  const params = useParams();
   const [product, setProduct] = useState<Product | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    if (!params.id) return;  // Guard if no ID
-    axios.get(`https://api.mydreambeauty.net/api/products/${params.id}?populate=*`)  // v5-compatible (all fields incl. image)
+    if (!params.id) {
+      setError('No product ID provided');
+      setLoading(false);
+      return;
+    }
+    axios.get(`https://api.mydreambeauty.net/api/products/${params.id}?populate=Images`)  // Matched to your prod field name
       .then(response => {
         setProduct(response.data.data.attributes);  // v5 structure
         setLoading(false);
       })
       .catch(err => {
-        setError('Failed to load product—check ID, Strapi data, or version.');
+        setError('Connection failed—check Strapi config, data, or network.');
         setLoading(false);
         console.error(err);
       });
@@ -41,7 +46,7 @@ export default function ProductPage() {
       <h1 className="text-3xl mb-6 text-center">{product.name}</h1>
       <div className="flex flex-col md:flex-row items-center">
         <Image
-          src={`https://api.mydreambeauty.net${product?.image?.data?.attributes?.url || '/placeholder.jpg'}`}  // Safe chaining + fallback
+          src={`https://api.mydreambeauty.net${product.Images?.data?.attributes?.url || '/placeholder.jpg'}`}  // Matched field, safe + fallback
           alt={product.name}
           width={500}
           height={384}

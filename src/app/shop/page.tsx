@@ -3,7 +3,6 @@
 import { useEffect, useState } from 'react';
 import axios from 'axios';
 import Link from 'next/link';
-import { addToCart } from '@/utils/cart';  // Assuming you have this utils file; create if not
 import Image from 'next/image';
 
 interface Product {
@@ -17,24 +16,25 @@ interface Product {
 
 export default function Shop() {
   const [products, setProducts] = useState<Product[]>([]);
-  const [loading, setLoading] = useState(true);  // Added for better UX
+  const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
   useEffect(() => {
-    axios.get('https://api.mydreambeauty.net/api/products?populate=image')
+    axios.get('https://api.mydreambeauty.net/api/products?populate=Images')  // Specific for v5; use =* if no fields error
       .then(response => {
-        setProducts(response.data.data);
+        setProducts(response.data.data || []);  // Fallback to empty array
         setLoading(false);
       })
       .catch(err => {
-        setError('Failed to load products');
+        setError('Failed to load products—check Strapi data or version.');
         setLoading(false);
         console.error(err);
       });
   }, []);
 
-  if (loading) return <p className="p-8 text-center">Loading products...</p>;
+  if (loading) return <p className="p-8 text-center">Loading shop...</p>;
   if (error) return <p className="p-8 text-center text-red-500">{error}</p>;
+  if (products.length === 0) return <p className="p-8 text-center">No products yet—add some in Strapi!</p>;
 
   return (
     <main className="p-8 max-w-7xl mx-auto">
@@ -43,24 +43,15 @@ export default function Shop() {
         {products.map(product => (
           <Link key={product.id} href={`/product/${product.id}`} className="block">
             <div className="border border-gray-200 p-4 hover:shadow-lg transition-shadow">
-		<Image 
-		  src={`https://api.mydreambeauty.net${product.attributes.image.data.attributes.url}`} 
-		  alt={product.attributes.name} 
-		  width={500}  // Adjust based on your images
-		  height={256} 
-		  className="w-full h-64 object-cover mb-4" 
-		/> 
-             <h2 className="text-xl font-semibold">{product.attributes.name}</h2>
+              <Image
+                src={`https://api.mydreambeauty.net${product.attributes?.Images?.data?.attributes?.url || '/placeholder.jpg'}`}  // Safe + fallback
+                alt={product.attributes?.name || 'Product'}
+                width={500}
+                height={256}
+                className="w-full h-64 object-cover mb-4"
+              />
+              <h2 className="text-xl font-semibold">{product.attributes.name}</h2>
               <p className="text-lg text-gray-700">${product.attributes.price.toFixed(2)}</p>
-		<button 
-		  onClick={(e) => {
-		    e.preventDefault();
-		    addToCart({ id: product.id, name: product.attributes.name, price: product.attributes.price });
-		  }} 
-		  className="bg-black text-white px-4 py-2 mt-2 w-full"
-		>
-		  Add to Cart
-		</button>
             </div>
           </Link>
         ))}
